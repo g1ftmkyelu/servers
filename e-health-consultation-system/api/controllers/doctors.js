@@ -1,4 +1,4 @@
-const Staff = require('../models/staff');
+const Doctor = require('../models/doctor');
 const { initializeApp } = require('firebase/app');
 const { getStorage, ref, getDownloadURL, uploadBytesResumable } = require('firebase/storage');
 const firebaseConfig = require('../configs/firebase.config')
@@ -9,30 +9,30 @@ const storage = getStorage();
 
 
 
-exports.getAllStaff = async (req, res) => {
+exports.getAllDoctor = async (req, res) => {
   try {
-    const staffs = await Staff.find();
-    res.json(staffs);
+    const doctors = await Doctor.find();
+    res.json(doctors);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-exports.getStaffById = async (req, res) => {
+exports.getDoctorById = async (req, res) => {
   try {
-    const staff = await Staff.findById(req.params.id);
-    if (!staff) {
-      return res.status(404).json({ error: 'Staff not found' });
+    const doctor = await Doctor.findById(req.params.id);
+    if (!doctor) {
+      return res.status(404).json({ error: 'Doctor not found' });
     }
-    res.json(staff);
+    res.json(doctor);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-exports.createStaff = async (req, res) => {
+exports.createDoctor = async (req, res) => {
   try {
-    const staff = req.body;
+    const doctor = req.body;
 
     // Upload the profile picture to Firebase Storage
     const fileRef = ref(storage, `profilePictures/${req.file.originalname}`);
@@ -42,24 +42,24 @@ exports.createStaff = async (req, res) => {
     const snapShot = await uploadBytesResumable(fileRef, req.file.buffer, metaData)
     const fileUrl = await getDownloadURL(snapShot.ref);
 
-    staff.profilePicture = fileUrl
+    doctor.profilePicture = fileUrl
 
-    const newStaff = new Staff(staff)
+    const newDoctor = new Doctor(doctor)
 
-    await newStaff.save();
-    res.status(201).json(staff);
+    await newDoctor.save();
+    res.status(201).json(doctor);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 };
 
-exports.updateStaff = async (req, res) => {
+exports.updateDoctor = async (req, res) => {
   try {
-    const targetStaff = await Staff.findById(req.params.id);
-    if (!targetStaff) {
-      return res.status(404).json({ error: 'Staff not found' });
+    const targetDoctor = await Doctor.findById(req.params.id);
+    if (!targetDoctor) {
+      return res.status(404).json({ error: 'Doctor not found' });
     }
-    const staff = req.body;
+    const doctor = req.body;
 
     // Upload the profile picture to Firebase Storage
     const fileRef = ref(storage, `profilePictures/${req.file.originalname}`);
@@ -69,24 +69,24 @@ exports.updateStaff = async (req, res) => {
     const snapShot = await uploadBytesResumable(fileRef, req.file.buffer, metaData)
     const fileUrl = await getDownloadURL(snapShot.ref);
 
-    staff.profilePicture = fileUrl
+    doctor.profilePicture = fileUrl
 
-    Object.assign(targetStaff, staff);
-    await targetStaff.save();
-    res.json(staff);
+    Object.assign(targetDoctor, doctor);
+    await targetDoctor.save();
+    res.json(doctor);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 };
 
-exports.deleteStaff = async (req, res) => {
+exports.deleteDoctor = async (req, res) => {
   try {
-    const staff = await Staff.findById(req.params.id);
-    if (!staff) {
-      return res.status(404).json({ error: 'Staff not found' });
+    const doctor = await Doctor.findById(req.params.id);
+    if (!doctor) {
+      return res.status(404).json({ error: 'Doctor not found' });
     }
-    await Staff.removeById(req.params.id).exec()
-    res.json({ message: 'Staff deleted successfully' });
+    await Doctor.removeById(req.params.id).exec()
+    res.json({ message: 'Doctor deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

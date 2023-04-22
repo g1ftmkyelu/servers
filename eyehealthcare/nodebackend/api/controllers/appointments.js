@@ -1,5 +1,6 @@
 const Appointment = require('../models/appointments');
 
+
 exports.createAppointment = async (req, res) => {
   try {
     const appointment = new Appointment(req.body);

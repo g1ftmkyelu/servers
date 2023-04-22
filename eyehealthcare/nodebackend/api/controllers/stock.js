@@ -1,73 +1,94 @@
 const Product = require('../models/stock');
+const { initializeApp } = require('firebase/app');
+const { getStorage, ref, getDownloadURL, uploadBytesResumable } = require('firebase/storage');
+const firebaseConfig = require('../configs/firebase.config')
 
-// GET all products
-exports.getAllProducts = async (req, res) => {
+
+initializeApp(firebaseConfig);
+const storage = getStorage();
+
+
+
+exports.getAllProduct = async (req, res) => {
   try {
     const products = await Product.find();
     res.json(products);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
-// GET a specific product by ID
 exports.getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ error: 'Product not found' });
     }
     res.json(product);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
-// POST a new product
 exports.createProduct = async (req, res) => {
-  const product = new Product({
-    type: req.body.type,
-    name: req.body.name,
-    image: req.body.image,
-    description: req.body.description,
-  });
-
   try {
-    const newProduct = await product.save();
-    res.status(201).json(newProduct);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+    const product = req.body;
+
+    // Upload the profile picture to Firebase Storage
+    const fileRef = ref(storage, `Products/${req.file.originalname}`);
+    const metaData = {
+      contentType: req.file.mimetype,
+    }
+    const snapShot = await uploadBytesResumable(fileRef, req.file.buffer, metaData)
+    const fileUrl = await getDownloadURL(snapShot.ref);
+
+    product.image = fileUrl
+
+    const newProduct = new Product(product)
+
+    await newProduct.save();
+    res.status(201).json(product);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 };
 
-// PUT/UPDATE an existing product
 exports.updateProduct = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+    const targetProduct = await Product.findById(req.params.id);
+    if (!targetProduct) {
+      return res.status(404).json({ error: 'Product not found' });
     }
-    product.type = req.body.type;
-    product.name = req.body.name;
-    product.image = req.body.image;
-    product.description = req.body.description;
-    const updatedProduct = await product.save();
-    res.json(updatedProduct);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+    const product = req.body;
+
+    // Upload the profile picture to Firebase Storage
+    const fileRef = ref(storage, `profilePictures/${req.file.originalname}`);
+    const metaData = {
+      contentType: req.file.mimetype,
+    }
+    const snapShot = await uploadBytesResumable(fileRef, req.file.buffer, metaData)
+    const fileUrl = await getDownloadURL(snapShot.ref);
+
+    product.profilePicture = fileUrl
+
+    Object.assign(targetProduct, product);
+    await targetProduct.save();
+    res.json(product);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 };
 
-// DELETE a product by ID
 exports.deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ error: 'Product not found' });
     }
-    await product.remove();
+    await Product.removeById(req.params.id).exec()
     res.json({ message: 'Product deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
+
