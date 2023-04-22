@@ -10,10 +10,6 @@ const purchaseSchema = new mongoose.Schema({
       ref: 'Beat',
       required: true
     },
-    beatUrl: {
-      type: String,
-      required: true
-    },
     customerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Customer',

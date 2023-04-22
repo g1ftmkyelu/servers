@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     const { id } = req.params
     try {
-        const queriedPurchase = await Purchase.findOne(id).exec()
+        const queriedPurchase = await Purchase.findById(id).exec()
         if (!queriedPurchase) return res.status(404).json({ error: 'Purchase not found' });
         return res.status(200).json(queriedPurchase)
     } catch (error) {
@@ -25,7 +25,7 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
     const purchase = req.body
     try {
-        const newPurchase = new Purchase({ purchase })
+        const newPurchase = new Purchase( purchase )
         await newPurchase.save()
         return res.status(200).json("purchased successfully!")
 
