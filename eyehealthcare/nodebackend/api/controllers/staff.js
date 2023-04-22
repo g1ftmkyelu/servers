@@ -85,7 +85,7 @@ exports.deleteStaff = async (req, res) => {
     if (!staff) {
       return res.status(404).json({ error: 'Staff not found' });
     }
-    await Staff.removeById(req.params.id).exec()
+    await Staff.findByIdAndDelete(req.params.id).exec()
     res.json({ message: 'Staff deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });

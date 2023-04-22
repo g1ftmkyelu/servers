@@ -1,7 +1,8 @@
 const Patient = require('../models/patients');
 const { initializeApp } = require('firebase/app');
 const { getStorage, ref, getDownloadURL, uploadBytesResumable } = require('firebase/storage');
-const firebaseConfig = require('../configs/firebase.config')
+const firebaseConfig = require('../configs/firebase.config');
+
 
 
 initializeApp(firebaseConfig);
@@ -79,13 +80,29 @@ exports.updatePatient = async (req, res) => {
   }
 };
 
+exports.updatePatientHistory = async (req, res) => {
+  try {
+    const targetPatient = await Patient.findById(req.params.id);
+    if (!targetPatient) {
+      return res.status(404).json({ error: 'Patient not found' });
+    }
+    const history = req.body;
+
+    const updatedPatient= await Patient.findByIdAndUpdate(req.params.id, {$push:{healthHistory: history}})
+    return res.status(200).json({message: "medical history updated successfully"});
+
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
 exports.deletePatient = async (req, res) => {
   try {
     const patient = await Patient.findById(req.params.id);
     if (!patient) {
       return res.status(404).json({ error: 'Patient not found' });
     }
-    await Patient.removeById(req.params.id).exec()
+    await Patient.findByIdAndDelete(req.params.id).exec()
     res.json({ message: 'Patient deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });

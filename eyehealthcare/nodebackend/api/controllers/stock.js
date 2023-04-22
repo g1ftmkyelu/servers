@@ -9,7 +9,7 @@ const storage = getStorage();
 
 
 
-exports.getAllProduct = async (req, res) => {
+exports.getAllProducts = async (req, res) => {
   try {
     const products = await Product.find();
     res.json(products);
@@ -35,7 +35,7 @@ exports.createProduct = async (req, res) => {
     const product = req.body;
 
     // Upload the profile picture to Firebase Storage
-    const fileRef = ref(storage, `Products/${req.file.originalname}`);
+    const fileRef = ref(storage, `profilePictures/${req.file.originalname}`);
     const metaData = {
       contentType: req.file.mimetype,
     }
@@ -69,7 +69,7 @@ exports.updateProduct = async (req, res) => {
     const snapShot = await uploadBytesResumable(fileRef, req.file.buffer, metaData)
     const fileUrl = await getDownloadURL(snapShot.ref);
 
-    product.profilePicture = fileUrl
+    product.image = fileUrl
 
     Object.assign(targetProduct, product);
     await targetProduct.save();
@@ -85,7 +85,7 @@ exports.deleteProduct = async (req, res) => {
     if (!product) {
       return res.status(404).json({ error: 'Product not found' });
     }
-    await Product.removeById(req.params.id).exec()
+    await Product.findByIdAndDelete(req.params.id).exec()
     res.json({ message: 'Product deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
