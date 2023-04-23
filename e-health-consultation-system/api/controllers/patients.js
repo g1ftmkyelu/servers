@@ -47,7 +47,7 @@ exports.createPatient = async (req, res) => {
     const newPatient = new Patient(patient)
 
     await newPatient.save();
-    res.status(201).json(patient);
+    res.status(201).json({message: 'Patient registered successfully'});
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -73,7 +73,7 @@ exports.updatePatient = async (req, res) => {
 
     Object.assign(targetPatient, patient);
     await targetPatient.save();
-    res.json(patient);
+    res.json({message: 'Successfully updated'});
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -85,7 +85,7 @@ exports.deletePatient = async (req, res) => {
     if (!patient) {
       return res.status(404).json({ error: 'Patient not found' });
     }
-    await Patient.removeById(req.params.id).exec()
+    await Patient.findByIdAndDelete(req.params.id).exec()
     res.json({ message: 'Patient deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });

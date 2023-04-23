@@ -15,39 +15,6 @@ const educationSchema = new mongoose.Schema({
   }
 });
 
-const workingHoursSchema = new mongoose.Schema({
-  days: {
-    type: String,
-    required: true
-  },
-  hours: {
-    type: String,
-    required: true
-  }
-});
-
-const addressSchema = new mongoose.Schema({
-  street: {
-    type: String,
-    required: true
-  },
-  city: {
-    type: String,
-    required: true
-  },
-  state: {
-    type: String,
-    required: true
-  },
-  zip: {
-    type: String,
-    required: true
-  },
-  country: {
-    type: String,
-    required: true
-  }
-});
 
 const doctorSchema = new mongoose.Schema({
   firstName: {
@@ -57,6 +24,16 @@ const doctorSchema = new mongoose.Schema({
   lastName: {
     type: String,
     required: true
+  },
+  gender: {
+    type: String,
+    enum: ['male','female'],
+    default: 'male',
+    unique:false
+  },
+  age: {
+    type: Number,
+    required: true,
   },
   email: {
     type: String,
@@ -68,10 +45,6 @@ const doctorSchema = new mongoose.Schema({
     required: true
   },
   specialty: {
-    type: String,
-    required: true
-  },
-  qualification: {
     type: String,
     required: true
   },
@@ -88,24 +61,24 @@ const doctorSchema = new mongoose.Schema({
     default:[]
   },
   workingHours: {
-    type: workingHoursSchema,
-    default:[]
+    type: String,
+    default:"9:00 - 1700"
   },
-  phone: {
+  phoneNumber: {
     type: String,
     required: true
   },
   address: {
-    type: addressSchema,
+    type: String,
     required: true
   },
   isVerified: {
     type: Boolean,
-    required: true
+    default: false
   },
   role: {
     type: String,
-    required: true
+    default: 'doctor'
   },
   profilePicture: {
     type: String,

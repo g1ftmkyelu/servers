@@ -3,17 +3,21 @@ const router = express.Router();
 const diagnosisController = require('../controllers/diagnosis');
 
 // GET all diagnoses
+router.get('/', diagnosisController.getAllDiagnoses);
 
 // GET a single diagnosis by id
-router.get('/diagnoses/:id', diagnosisController.getDiagnosesByPatientId);
+router.get('/:id', diagnosisController.getDiagnosisById);
+
+// GET a single diagnosis by id
+router.get('/patient/:id', diagnosisController.getDiagnosesByPatientId);
 
 // POST a new diagnosis
-router.post('/diagnoses', diagnosisController.createDiagnosis);
+router.post('/', diagnosisController.createDiagnosis);
 
 // PUT update a diagnosis by id
-router.put('/diagnoses/:id', diagnosisController.updateDiagnosisById);
+router.put('/:id', diagnosisController.updateDiagnosisById);
 
 // DELETE a diagnosis by id
-router.delete('/diagnoses/:id', diagnosisController.deleteDiagnosis);
+router.delete('/:id', diagnosisController.deleteDiagnosis);
 
 module.exports = router;

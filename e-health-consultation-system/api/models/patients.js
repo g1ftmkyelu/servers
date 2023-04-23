@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    required: true
+    default:'patient'
   },
   email: {
     type: String,

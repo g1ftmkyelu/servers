@@ -3,7 +3,7 @@ const router = express.Router();
 const ehrController = require('../controllers/EHR');
 
 // GET all EHR records
-router.get('/', ehrController.getEHR);
+router.get('/', ehrController.getAllEHR);
 
 // GET a single EHR record by patient id
 router.get('/:id', ehrController.getEHRByPatientId);

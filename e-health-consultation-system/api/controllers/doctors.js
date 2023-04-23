@@ -47,7 +47,7 @@ exports.createDoctor = async (req, res) => {
     const newDoctor = new Doctor(doctor)
 
     await newDoctor.save();
-    res.status(201).json(doctor);
+    res.status(201).json({message:"doctor registration successful"});
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -73,7 +73,39 @@ exports.updateDoctor = async (req, res) => {
 
     Object.assign(targetDoctor, doctor);
     await targetDoctor.save();
-    res.json(doctor);
+    res.json({message: 'doctor updated successfully'});
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+exports.AddDoctorEducation = async (req, res) => {
+  try {
+    const targetDoctor = await Doctor.findById(req.params.id);
+    if (!targetDoctor) {
+      return res.status(404).json({ error: 'Doctor not found' });
+    }
+    const education = req.body;
+
+    await Doctor.findByIdAndUpdate(req.params.id, {$push:{education: education}})
+    return res.status(200).json({message: "medical education updated successfully"});
+
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+exports.RemoveDoctorEducation = async (req, res) => {
+  try {
+    const targetDoctor = await Doctor.findById(req.params.id);
+    if (!targetDoctor) {
+      return res.status(404).json({ error: 'Doctor not found' });
+    }
+    const education = req.body;
+
+    await Doctor.findByIdAndUpdate(req.params.id, {$pop:{education:education}})
+    return res.status(200).json({message: "medical education updated successfully"});
+
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -85,7 +117,7 @@ exports.deleteDoctor = async (req, res) => {
     if (!doctor) {
       return res.status(404).json({ error: 'Doctor not found' });
     }
-    await Doctor.removeById(req.params.id).exec()
+    await Doctor.findByIdAndDelete(req.params.id).exec()
     res.json({ message: 'Doctor deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });

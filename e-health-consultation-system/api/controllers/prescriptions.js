@@ -5,24 +5,32 @@ const Diagnosis = require('../models/diagnosis');
 exports.getPrescriptions = async (req, res) => {
   try {
     const prescriptions = await Prescription.find();
-    res.status(200).json({
-      success: true,
-      count: prescriptions.length,
-      data: prescriptions
-    });
+    res.status(200).json(prescriptions);
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, error: 'Server Error' });
   }
 };
 
-exports.getPrescription = async (req,res) => {
-  const {id} = req.params
-  try{
-      const prescription = await Prescription.findById(id).exec();
-      return res.status(200).json(prescription)
+exports.getPrescription = async (req, res) => {
+  const { id } = req.params
+  try {
+    const prescription = await Prescription.findById(id).exec();
+    return res.status(200).json(prescription)
   }
-  catch(err){
+  catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Server Error' });
+  }
+}
+
+exports.getPrescriptionByDiagnoisId = async (req, res) => {
+  const { id } = req.params
+  try {
+    const prescriptions = await Prescription.find({ diagnosisId: id }).exec();
+    return res.status(200).json(prescriptions)
+  }
+  catch (err) {
     console.error(err);
     res.status(500).json({ success: false, error: 'Server Error' });
   }
@@ -53,18 +61,15 @@ exports.createPrescription = async (req, res) => {
 // Update a prescription
 exports.updatePrescription = async (req, res) => {
   const { id } = req.params;
-  const { drugs } = req.body;
+  const prescription = req.body;
 
   try {
     // Check if the prescription exists
-    let prescription = await Prescription.findById(id);
-    if (!prescription) {
-      return res.status(404).json({ success: false, error: 'Prescription not found' });
-    }
-
-    // Update the prescription fields and save it to the database
-    prescription.drugs = drugs;
-    await prescription.save();
+    await Prescription.findByIdAndUpdate(
+      id,
+      prescription,
+      { new: true }
+    );
 
     res.status(200).json({ success: true, data: prescription });
   } catch (err) {
@@ -85,11 +90,11 @@ exports.deletePrescription = async (req, res) => {
     }
 
     // Delete the prescription from the database
-    await prescription.remove();
+    await Prescription.findByIdAndDelete(id).exec()
 
-    res.status(200).json({ success: true, data: {} });
+    res.status(200).json({ success: true, message: 'Prescription deleted successfully' });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, error: 'Server Error' });
+    res.status(500).json({ success: false, error: err.message });
   }
 };

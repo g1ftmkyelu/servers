@@ -17,6 +17,12 @@ router.post('/',upload.single('file'), doctorController.createDoctor);
 // PUT update a doctor by id
 router.put('/:id', upload.single('file'), doctorController.updateDoctor);
 
+
+router.put('/add-education/:id', doctorController.AddDoctorEducation);
+
+
+router.put('/remove-education/:id', doctorController.RemoveDoctorEducation);
+
 // DELETE a doctor by id
 router.delete('/:id', doctorController.deleteDoctor);
 

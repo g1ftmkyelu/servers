@@ -1,55 +1,44 @@
+const { async } = require('@firebase/util');
 const EHR = require('../models/EHR');
 const Patient = require('../models/patients');
 
-// Get a patient's EHR
-exports.getEHR = async (req, res) => {
-  try {
-    const patientId = req.params.patientId;
-    const ehr = await EHR.findOne({ patientId: patientId }).populate('patientId');
-    if (!ehr) {
-      return res.status(404).json({ success: false, message: 'EHR not found' });
-    }
-    res.status(200).json({ success: true, data: ehr });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ success: false, message: 'Server Error' });
+
+exports.getAllEHR = async (req, res) =>{
+  try{
+    const ehrs= await EHR.find().exec();
+    return res.status(200).json(ehrs)
   }
-};
+  catch(err){
+    console.error(err.message);
+    res.status(500).json({ success: false, message: err.message });
+  }
+}
+
+
+
 
 
 // Get EHR by patient ID
 exports.getEHRByPatientId = async (req, res) => {
-    const patientId = req.params.patientId;
+    const {id} = req.params;
   
     try {
       // Find patient by ID
-      const patient = await Patient.findById(patientId);
+      const myEhr = await EHR.findOne({patientId:id});
   
-      if (!patient) {
-        return res.status(404).json({
-          success: false,
-          message: 'Patient not found'
-        });
-      }
-  
-      // Find EHR by patient ID
-      const ehr = await EHR.findOne({ patientId: patientId });
-  
-      if (!ehr) {
+      if (!myEhr)  {
         return res.status(404).json({
           success: false,
           message: 'EHR not found'
         });
       }
   
-      res.status(200).json({
-        success: true,
-        data: ehr
-      });
+  
+      res.status(200).json(myEhr);
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: 'Server error'
+        message: err.message
       });
     }
   };
@@ -67,43 +56,40 @@ exports.createEHR = async (req, res) => {
     res.status(201).json({ success: true, data: ehr });
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ success: false, message: 'Server Error' });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
 // Update an existing EHR
 exports.updateEHR = async (req, res) => {
   try {
-    const ehrId = req.params.ehrId;
-    const { allergies, surgeryHistory, geneticallyInheritedDiseases, specialNeeds, additionalNotes } = req.body;
-    const ehr = await EHR.findById(ehrId);
-    if (!ehr) {
-      return res.status(404).json({ success: false, message: 'EHR not found' });
-    }
-    ehr.allergies = allergies || ehr.allergies;
-    ehr.surgeryHistory = surgeryHistory || ehr.surgeryHistory;
-    ehr.geneticallyInheritedDiseases = geneticallyInheritedDiseases || ehr.geneticallyInheritedDiseases;
-    ehr.specialNeeds = specialNeeds || ehr.specialNeeds;
-    ehr.additionalNotes = additionalNotes || ehr.additionalNotes;
-    await ehr.save();
-    res.status(200).json({ success: true, data: ehr });
+    const {id} = req.params;
+    const ehr=req.body
+
+    await EHR.findByIdAndUpdate(
+      id,
+      ehr,
+      { new: true }
+    );
+
+    res.status(200).json({ success: true, message:'EHR updated successfully'});
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ success: false, message: 'Server Error' });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
 // Delete an EHR
 exports.deleteEHR = async (req, res) => {
   try {
-    const ehrId = req.params.ehrId;
-    const ehr = await EHR.findByIdAndDelete(ehrId);
+    const {id}=req.params
+    const ehr = await EHR.findByIdAndDelete(id);
     if (!ehr) {
       return res.status(404).json({ success: false, message: 'EHR not found' });
     }
     res.status(200).json({ success: true, message: 'EHR deleted successfully' });
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ success: false, message: 'Server Error' });
+    res.status(500).json({ success: false, message: err.message });
   }
 };

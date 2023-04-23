@@ -20,11 +20,11 @@ const EHRRoutes = require('./api/routes/EHR');
 
 // Use routes as middleware
 app.use('/appointments', appointmentRoutes);
-app.use('/doctor', doctorRoutes);
+app.use('/doctors', doctorRoutes);
 app.use('/patients', patientRoutes);
-app.use('/diagnosis', diagnosisRoutes);
+app.use('/diagnoses', diagnosisRoutes);
 app.use('/login', loginRoutes)
-app.use('/prescritions', prescriptionRoutes);
+app.use('/prescriptions', prescriptionRoutes);
 app.use('/ehr', EHRRoutes);
 
 

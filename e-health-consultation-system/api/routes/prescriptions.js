@@ -3,18 +3,21 @@ const router = express.Router();
 const prescriptionController = require('../controllers/prescriptions');
 
 // GET all prescriptions
-router.get('/prescriptions', prescriptionController.getPrescriptions);
+router.get('/', prescriptionController.getPrescriptions);
 
 // GET a single prescription by id
-router.get('/prescriptions/:id', prescriptionController.getPrescription);
+router.get('/:id', prescriptionController.getPrescription);
+
+
+router.get('/diagnosis/:id', prescriptionController.getPrescriptionByDiagnoisId);
 
 // POST a new prescription
-router.post('/prescriptions', prescriptionController.createPrescription);
+router.post('/', prescriptionController.createPrescription);
 
 // PUT update a prescription by id
-router.put('/prescriptions/:id', prescriptionController.updatePrescription);
+router.put('/:id', prescriptionController.updatePrescription);
 
 // DELETE a prescription by id
-router.delete('/prescriptions/:id', prescriptionController.deletePrescription);
+router.delete('/:id', prescriptionController.deletePrescription);
 
 module.exports = router;
