@@ -1,4 +1,4 @@
-const Prescription = require('../models/prescription');
+const Prescription = require('../models/prescriptions');
 const Diagnosis = require('../models/diagnosis');
 
 // Get all prescriptions
@@ -15,6 +15,18 @@ exports.getPrescriptions = async (req, res) => {
     res.status(500).json({ success: false, error: 'Server Error' });
   }
 };
+
+exports.getPrescription = async (req,res) => {
+  const {id} = req.params
+  try{
+      const prescription = await Prescription.findById(id).exec();
+      return res.status(200).json(prescription)
+  }
+  catch(err){
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Server Error' });
+  }
+}
 
 // Create a new prescription
 exports.createPrescription = async (req, res) => {

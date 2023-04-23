@@ -1,4 +1,4 @@
-const Doctor = require('../models/doctor');
+const Doctor = require('../models/doctors');
 const { initializeApp } = require('firebase/app');
 const { getStorage, ref, getDownloadURL, uploadBytesResumable } = require('firebase/storage');
 const firebaseConfig = require('../configs/firebase.config')
@@ -9,7 +9,7 @@ const storage = getStorage();
 
 
 
-exports.getAllDoctor = async (req, res) => {
+exports.getAllDoctors = async (req, res) => {
   try {
     const doctors = await Doctor.find();
     res.json(doctors);

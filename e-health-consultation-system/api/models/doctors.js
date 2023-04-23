@@ -85,15 +85,11 @@ const doctorSchema = new mongoose.Schema({
   },
   education: {
     type: [educationSchema],
-    required: true
+    default:[]
   },
   workingHours: {
     type: workingHoursSchema,
-    required: true
-  },
-  hospital: {
-    type: String,
-    required: true
+    default:[]
   },
   phone: {
     type: String,

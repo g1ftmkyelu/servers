@@ -2,19 +2,22 @@ const express = require('express');
 const router = express.Router();
 const doctorController = require('../controllers/doctors');
 
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
+
 // GET all doctors
-router.get('/doctors', doctorController.getAllDoctors);
+router.get('/', doctorController.getAllDoctors);
 
 // GET a single doctor by id
-router.get('/doctors/:id', doctorController.getDoctorById);
+router.get('/:id', doctorController.getDoctorById);
 
 // POST a new doctor
-router.post('/doctors', doctorController.createDoctor);
+router.post('/',upload.single('file'), doctorController.createDoctor);
 
 // PUT update a doctor by id
-router.put('/doctors/:id', doctorController.updateDoctor);
+router.put('/:id', upload.single('file'), doctorController.updateDoctor);
 
 // DELETE a doctor by id
-router.delete('/doctors/:id', doctorController.deleteDoctor);
+router.delete('/:id', doctorController.deleteDoctor);
 
 module.exports = router;

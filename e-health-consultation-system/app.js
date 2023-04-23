@@ -15,6 +15,8 @@ const doctorRoutes = require('./api/routes/doctors');
 const patientRoutes = require('./api/routes/patients');
 const loginRoutes = require('./api/routes/login');
 const diagnosisRoutes = require('./api/routes/diagnosis');
+const prescriptionRoutes = require('./api/routes/prescriptions');
+const EHRRoutes = require('./api/routes/EHR');
 
 // Use routes as middleware
 app.use('/appointments', appointmentRoutes);
@@ -22,6 +24,8 @@ app.use('/doctor', doctorRoutes);
 app.use('/patients', patientRoutes);
 app.use('/diagnosis', diagnosisRoutes);
 app.use('/login', loginRoutes)
+app.use('/prescritions', prescriptionRoutes);
+app.use('/ehr', EHRRoutes);
 
 
 
