@@ -20,4 +20,5 @@ router.put('/:id', upload.single('file'), patientController.updatePatient);
 // DELETE a patient by id
 router.delete('/:id', patientController.deletePatient);
 
+
 module.exports = router;
