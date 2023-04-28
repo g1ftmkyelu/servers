@@ -13,7 +13,7 @@ exports.createAppointment = async (req, res) => {
 
 exports.getAppointments = async (req, res) => {
   try {
-    const appointments = await Appointment.find();
+    const appointments = await Appointment.find().sort({'_id': -1}).exec();
     res.status(200).json(appointments);
   } catch (err) {
     res.status(500).json({ error: err.message });

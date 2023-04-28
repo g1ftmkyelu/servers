@@ -11,7 +11,7 @@ const storage = getStorage();
 
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find().sort({'_id': -1}).exec();
     res.json(products);
   } catch (err) {
     res.status(500).json({ error: err.message });

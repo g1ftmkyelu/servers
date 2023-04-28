@@ -17,13 +17,14 @@ const patientRoutes = require('./api/routes/patients');
 const productRoutes = require('./api/routes/stock');
 const loginRoutes = require('./api/routes/login');
 const diagnosisRoutes = require('./api/routes/diagnosis');
+const paymentRoutes = require('./api/routes/payment');
 
 // Use routes as middleware
 app.use('/appointments', appointmentRoutes);
 app.use('/staff', staffRoutes);
 app.use('/patients', patientRoutes);
 app.use('/products', productRoutes);
-
+app.use('/payment', paymentRoutes);
 app.use('/login', loginRoutes);
 app.use('/diagnosis', diagnosisRoutes);
 
